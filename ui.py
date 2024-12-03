@@ -17,6 +17,18 @@ class WorkoutTrackerUI:
         self.data_handler = DataHandler()
         self.workout_data = []  # Stores workout plan data
 
+        # Default routine template and routines
+        self.routine_templates = {
+            "My Template (A1, B1, A2, B2)": ["A1", "B1", "A2", "B2"],
+            "Basic Split (A, B, C)": ["A", "B", "C"],
+            "Push Pull Legs (Push1, Pull1, Legs1, Push2, Pull2, Legs2)": ["Push1", "Pull1", "Legs1", "Push2", "Pull2", "Legs2"],
+            "Advanced Split (A, B, C, D)": ["A", "B", "C", "D"],
+            "Minimal Split (A, B)": ["A", "B"],
+            "Full Body (Fullbody1, Fullbody2, Fullbody3)": ["Fullbody1", "Fullbody2", "Fullbody3"]
+        }
+        self.selected_template = tk.StringVar(value="My Template (A1, B1, A2, B2)")
+        self.routines = self.routine_templates[self.selected_template.get()]
+
         # Default calculation method
         self.calculation_method = tk.StringVar(value="Total Method")
 
@@ -66,6 +78,12 @@ class WorkoutTrackerUI:
         # Weekly Summary
         self.summary_frame = ttk.Frame(main_content)
 
+        # Routine Template Dropdown
+        ttk.Label(self.summary_frame, text="Routine Template:").pack(side="top", pady=5)
+        template_dropdown = ttk.Combobox(self.summary_frame, textvariable=self.selected_template, values=list(self.routine_templates.keys()), state="readonly")
+        template_dropdown.pack(side="top", pady=5)
+        template_dropdown.bind("<<ComboboxSelected>>", self.update_routines)
+
         # Calculation Method Dropdown
         ttk.Label(self.summary_frame, text="Calculation Method:").pack(side="top", pady=5)
         method_dropdown = ttk.Combobox(self.summary_frame, textvariable=self.calculation_method,
@@ -93,7 +111,8 @@ class WorkoutTrackerUI:
         # Routine Dropdown
         ttk.Label(frame, text="Routine:").grid(row=0, column=0, padx=5, pady=5)
         self.routine_var = tk.StringVar()
-        ttk.Combobox(frame, textvariable=self.routine_var, values=["A1", "B1", "A2", "B2"]).grid(row=0, column=1, padx=5, pady=5)
+        self.routine_dropdown = ttk.Combobox(frame, textvariable=self.routine_var, values=self.routines)
+        self.routine_dropdown.grid(row=0, column=1, padx=5, pady=5)
 
         # Exercise Dropdown
         ttk.Label(frame, text="Exercise:").grid(row=0, column=2, padx=5, pady=5)
@@ -125,6 +144,12 @@ class WorkoutTrackerUI:
 
         # Add Exercise Button
         ttk.Button(frame, text="Add Exercise", command=self.add_exercise).grid(row=3, column=0, columnspan=4, pady=10)
+
+    def update_routines(self, event=None):
+        """Update routine options based on the selected template."""
+        self.routines = self.routine_templates[self.selected_template.get()]
+        self.routine_dropdown['values'] = self.routines
+        self.routine_var.set("")  # Reset selected routine
 
     def update_muscle_groups(self, event=None):
         exercise = self.exercise_var.get()
@@ -175,7 +200,7 @@ class WorkoutTrackerUI:
         for item in self.summary_tree.get_children():
             self.summary_tree.delete(item)
 
-        # Calculate total sets per muscle group
+        # Calculate total sets per muscle group based on calculation method
         muscle_summary = {}
         for entry in self.workout_data:
             main = entry['main_muscle']
