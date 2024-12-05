@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Workout Plan</h2>
+
+<!-- Form to add exercises -->
+<form id="add-exercise-form">
+    <div class="mb-3">
+        <label for="routine" class="form-label">Routine</label>
+        <select class="form-select" id="routine" name="routine">
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="Push">Push</option>
+            <option value="Pull">Pull</option>
+            <option value="Legs">Legs</option>
+            <option value="Full Body 1">Full Body 1</option>
+            <option value="Full Body 2">Full Body 2</option>
+            <option value="Custom">Custom</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="exercise" class="form-label">Exercise</label>
+        <select class="form-select" id="exercise" name="exercise">
+            {% for exercise in exercises %}
+            <option value="{{ exercise }}">{{ exercise }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="sets" class="form-label">Sets</label>
+        <input type="number" class="form-control" id="sets" name="sets" min="1" value="1">
+    </div>
+    <div class="mb-3">
+        <label for="rep_range" class="form-label">Rep Range</label>
+        <input type="text" class="form-control" id="rep_range" name="rep_range" placeholder="e.g., 8-12">
+    </div>
+    <div class="mb-3">
+        <label for="rir" class="form-label">RIR</label>
+        <input type="number" class="form-control" id="rir" name="rir" min="0" max="10" value="2">
+    </div>
+    <div class="mb-3">
+        <label for="weight" class="form-label">Weight (Kg)</label>
+        <input type="number" class="form-control" id="weight" name="weight" placeholder="Optional">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Exercise</button>
+</form>
+
+<!-- Workout plan table -->
+<h3>Your Workout Plan</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Routine</th>
+            <th>Exercise</th>
+            <th>Sets</th>
+            <th>Rep Range</th>
+            <th>RIR</th>
+            <th>Weight</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="workout-plan-table">
+        {% for i, exercise in enumerate(workout_data) %}
+        <tr>
+            <td>{{ i + 1 }}</td>
+            <td>{{ exercise.routine }}</td>
+            <td>{{ exercise.exercise }}</td>
+            <td>{{ exercise.sets }}</td>
+            <td>{{ exercise.rep_range }}</td>
+            <td>{{ exercise.rir }}</td>
+            <td>{{ exercise.weight }}</td>
+            <td>
+                <button class="btn btn-danger btn-sm remove-exercise" data-index="{{ i }}">Remove</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

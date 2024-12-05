@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Summary</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weekly Summary</h1>
+        <div class="summary-controls">
+            <label for="method">Calculation Method:</label>
+            <select id="method" name="method" onchange="updateSummary()">
+                <option value="Total">Total</option>
+                <option value="Fractional">Fractional</option>
+                <option value="Direct">Direct</option>
+            </select>
+            <button onclick="updateSummary()">Update</button>
+        </div>
+        <table id="weekly-summary-table">
+            <thead>
+                <tr>
+                    <th>Muscle Group</th>
+                    <th>Total Sets</th>
+                    <th>Total Reps</th>
+                    <th>Total Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if summary %}
+                    {% for muscle_group, total_sets, total_reps, total_weight in summary %}
+                        <tr>
+                            <td>{{ muscle_group }}</td>
+                            <td>{{ total_sets }}</td>
+                            <td>{{ total_reps }}</td>
+                            <td>{{ total_weight }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="no-data">No data available.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <script src="/static/js/app.js"></script>
+    <script>
+        function updateSummary() {
+            const method = document.getElementById('method').value;
+            window.location.href = `/weekly_summary?method=${method}`;
+        }
+    </script>
+</body>
+</html>
