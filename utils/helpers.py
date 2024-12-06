@@ -1,4 +1,5 @@
 import sqlite3
+from utils.config import DB_FILE
 
 def initialize_database():
     connection = sqlite3.connect("workout.db")
@@ -28,36 +29,44 @@ def initialize_database():
     connection.commit()
     connection.close()
 
-def add_exercise(name, muscle_group, sets, reps, weight):
-    connection = sqlite3.connect("workout.db")
+def add_exercise(routine,exercise, sets, min_rep_range, max_rep_range, rir, weight):
+    connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
     cursor.execute('''
-        INSERT INTO exercises (name, muscle_group, sets, reps, weight)
-        VALUES (?, ?, ?, ?, ?)
-    ''', (name, muscle_group, sets, reps, weight))
-
+            INSERT INTO user_selection (routine, exercise, sets, min_rep_range, max_rep_range, rir, weight)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (routine, exercise, sets, min_rep_range, max_rep_range, rir, weight))
     connection.commit()
     connection.close()
 
 def get_exercises():
-    connection = sqlite3.connect("workout.db")
+    connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
-    cursor.execute('SELECT name, muscle_group, sets, reps, weight FROM exercises')
+    cursor.execute('''SELECT exercise_name FROM exercises''')
     exercises = cursor.fetchall()
     connection.close()
-    return exercises
+    return [row[0] for row in exercises]
+
+def get_user_selection():
+    connection = sqlite3.connect(DB_FILE)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM user_selection''')
+    user_selection = cursor.fetchall()
+    connection.close()
+    print(user_selection)
+    return user_selection
 
 def calculate_weekly_summary():
-    connection = sqlite3.connect("workout.db")
+    connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
     cursor.execute('''
         SELECT muscle_group, SUM(sets) as total_sets, SUM(reps) as total_reps, SUM(weight) as total_weight
-        FROM exercises
+        FROM user_selection
         GROUP BY muscle_group
     ''')
     summary = cursor.fetchall()
     cursor.executemany('''
-        INSERT INTO weekly_summary (week, muscle_group, total_sets, total_reps, total_weight)
+        INSERT OR REPLACE INTO weekly_summary (week, muscle_group, total_sets, total_reps, total_weight)
         VALUES (strftime('%W', 'now'), ?, ?, ?, ?)
     ''', [(row[0], row[1], row[2], row[3]) for row in summary])
     connection.commit()
@@ -97,9 +106,7 @@ def calculate_direct_sets(muscle_group):
     connection = sqlite3.connect("workout.db")
     cursor = connection.cursor()
     cursor.execute('''
-        SELECT SUM(sets) 
-        FROM exercises
-        WHERE muscle_group = ?
+        SELECT SUM(sets) FROM exercises WHERE muscle_group = ?
     ''', (muscle_group,))
     direct_sets = cursor.fetchone()[0] or 0
     connection.close()

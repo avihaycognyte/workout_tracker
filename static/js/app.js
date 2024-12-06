@@ -8,22 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 routine: document.getElementById("routine").value,
                 exercise: document.getElementById("exercise").value,
                 sets: document.getElementById("sets").value,
-                rep_range: document.getElementById("rep_range").value,
+                min_rep_range: document.getElementById("min_rep_range").value,
+                max_rep_range: document.getElementById("max_rep_range").value,
                 rir: document.getElementById("rir").value,
                 weight: document.getElementById("weight").value,
             };
 
-            fetch("/workout_plan", {
+            fetch("/add_exercise", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(exerciseData),
             })
                 .then((response) => response.json())
-                .then((data) => {
-                    alert(data.message);
-                    location.reload();
-                })
                 .catch((error) => console.error("Error:", error));
+            location.reload()
         });
     }
 

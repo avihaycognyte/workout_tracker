@@ -16,6 +16,8 @@ class DataHandler:
                 self.cursor.execute(query, params)
             else:
                 self.cursor.execute(query)
+            print("execute")
+            print(query)
             self.conn.commit()
         except Exception as e:
             print(f"Error executing query: {e}")
@@ -29,6 +31,8 @@ class DataHandler:
                 self.cursor.execute(query, params)
             else:
                 self.cursor.execute(query)
+            print("fetch all")
+            print(query)
             return self.cursor.fetchall()
         except Exception as e:
             print(f"Error fetching data: {e}")

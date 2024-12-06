@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Summary</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-</head>
-<body>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Weekly Summary</title>-->
+<!--    <link rel="stylesheet" href="/static/css/styles.css">-->
+<!--</head>-->
+<!--<body>-->
+{% extends "base.html" %}
+<div>.0
     <div class="container">
         <h1>Weekly Summary</h1>
         <div class="summary-controls">
@@ -45,12 +47,15 @@
             </tbody>
         </table>
     </div>
-    <script src="/static/js/app.js"></script>
-    <script>
-        function updateSummary() {
-            const method = document.getElementById('method').value;
-            window.location.href = `/weekly_summary?method=${method}`;
-        }
-    </script>
-</body>
-</html>
+</div>
+<!--    <script src="/static/js/app.js"></script>-->
+<!--    <script>-->
+<!--        function updateSummary() {-->
+<!--            const method = document.getElementById('method').value;-->
+<!--            window.location.href = `/weekly_summary?method=${method}`;-->
+<!--        }-->
+<!--    </script>-->
+
+
+<!--</body>-->
+<!--</html>-->
