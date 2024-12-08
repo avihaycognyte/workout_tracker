@@ -11,10 +11,12 @@ body {
 .container {
     margin: 20px auto;
     padding: 20px;
-    background-color: #ffffff; /* Card-like white background */
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Deeper shadow for modern look */
-    max-width: 1200px; /* Centered layout with max width */
+    background-color: #ffffff; /* White card-style background */
+    border-radius: 16px; /* Softer rounded corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Deeper shadow for a modern feel */
+    max-width: 1400px; /* Increased max width */
+    width: 95%; /* Ensure responsiveness */
+    animation: fadeIn 0.8s ease-in-out; /* Smooth entry animation */
 }
 
 .navbar {
@@ -47,19 +49,20 @@ p, label {
 
 /* Table Styles */
 .table {
-    margin-top: 15px;
-    border-collapse: collapse;
+    margin: 0 auto; /* Center the table */
     width: 100%;
-    border-radius: 8px;
-    overflow: hidden; /* Ensures rounded corners apply */
+    border-collapse: collapse;
+    border-radius: 12px; /* Rounded table corners */
+    overflow: hidden;
 }
 
 .table th, .table td {
     text-align: center;
     vertical-align: middle;
     border: 1px solid #e9ecef;
-    padding: 12px;
-    font-size: 0.95rem;
+    padding: 14px;
+    font-size: 1rem;
+    word-wrap: break-word; /* Prevent content from overflowing */
 }
 
 .table th {
@@ -80,6 +83,16 @@ p, label {
 
 .table tbody tr:hover {
     background-color: #f1f5fb; /* Highlight row on hover */
+}
+
+/* Table Responsiveness */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff; /* Ensure table stays inside white background */
+    padding: 15px; /* Add padding around table */
 }
 
 /* Form Styles */
@@ -140,23 +153,6 @@ p, label {
     transform: translateY(-2px);
 }
 
-/* Table Responsiveness */
-.table-responsive {
-    overflow-x: auto;
-    margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.table-responsive::-webkit-scrollbar {
-    height: 8px;
-}
-
-.table-responsive::-webkit-scrollbar-thumb {
-    background-color: #adb5bd;
-    border-radius: 4px;
-}
-
 /* Utility Classes */
 .text-center {
     text-align: center;
@@ -203,5 +199,17 @@ footer {
     .btn {
         width: 100%;
         margin: 10px 0;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
