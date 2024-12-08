@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Per Session Summary</h1>
+
+    <!-- Method Dropdown -->
+    <div class="mb-3">
+        <label for="method" class="form-label">Calculation Method</label>
+        <select id="method" class="form-select">
+            <option value="Total" selected>Total</option>
+            <option value="Fractional">Fractional</option>
+            <option value="Direct">Direct</option>
+        </select>
+    </div>
+
+    <!-- Container for Dynamic Content -->
+    <div id="session-summary-container" class="mt-4">
+        <div class="text-center">
+            <p class="text-muted">Select a calculation method to view session summaries.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+async function updateSessionSummary() {
+    const method = document.getElementById("method").value;
+    const container = document.getElementById("session-summary-container");
+
+    // Show a loading spinner
+    container.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+
+    try {
+        const response = await fetch(`/session_summary?method=${method}`, {
+            headers: { "Accept": "application/json" },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-muted">No data available for the selected method.</div>`;
+            return;
+        }
+
+        // Group data by routine
+        const groupedData = data.reduce((acc, row) => {
+            acc[row.routine] = acc[row.routine] || [];
+            acc[row.routine].push(row);
+            return acc;
+        }, {});
+
+        // Render tables for each routine
+        container.innerHTML = Object.entries(groupedData).map(([routine, rows]) => `
+            <div class="mb-4">
+                <h3>${routine}</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Muscle Group</th>
+                            <th>Total Sets</th>
+                            <th>Total Reps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map(row => `
+                            <tr>
+                                <td>${row.muscle_group}</td>
+                                <td>${row.total_sets}</td>
+                                <td>${row.total_reps}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `).join("");
+    } catch (error) {
+        console.error("Error fetching session summary:", error);
+        container.innerHTML = `
+            <div class="text-center text-danger">Failed to load data. Please try again.</div>`;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const methodDropdown = document.getElementById("method");
+
+    methodDropdown.addEventListener("change", updateSessionSummary);
+    updateSessionSummary(); // Load initial data
+});
+</script>
+{% endblock %}
